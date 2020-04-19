@@ -55,6 +55,9 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install -y azure-cli \
     #
+    # Install the Azure Container Registry's Docker Credential Helper
+    && curl -L https://aka.ms/acr/installaad/bash | /bin/bash \
+    #
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
