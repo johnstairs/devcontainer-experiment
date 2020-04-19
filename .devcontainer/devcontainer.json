@@ -4,7 +4,7 @@
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
 	"extensions": [
-		"ms-dotnettools.csharp"
-	],
-	"remoteUser": "vscode"
+		"ms-dotnettools.csharp",
+		"ms-azuretools.vscode-docker"
+	]
 }
