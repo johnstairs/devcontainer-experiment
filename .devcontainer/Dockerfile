@@ -42,6 +42,9 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install -y docker-ce docker-ce-cli containerd.io \
     #
+    # Add user to docker group
+    && usermod -aG docker $USERNAME
+    #
     # Install kubectl
     && curl -sSL -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
     && chmod +x /usr/local/bin/kubectl \
