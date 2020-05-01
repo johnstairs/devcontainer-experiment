@@ -67,11 +67,13 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+# Set an environment variable with a hash of the .devcontainer directory's contents
+# so we can know when we need to update codespace.
+# The ENV command does not support computed values
 COPY . /.devcontainer
-
-RUN chmod +x ./.devcontainer/compute-directory-hash.sh && ./.devcontainer/compute-directory-hash.sh > /.devcontainer-hash
+RUN chmod +x ./.devcontainer/compute-directory-hash.sh \
+    && echo export DEVCONTAINERHASH="$(./.devcontainer/compute-directory-hash.sh)" >> /etc/bash.bashrc \
+    && rm -rf /.devcontainer
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
-
-CMD /bin/bash -c "export DEVCONTAINERHASH=`cat /.devcontainer-hash`; while sleep 1000; do :; done";
