@@ -19,6 +19,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Configure apt and install packages
 ARG HELM_VERSION="v3.1.2"
 ARG KUBE_VERSION="v1.18.1"
+ARG AZURE_CLI_VERSION="2.5.1-1~buster"
 
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
@@ -53,7 +54,7 @@ RUN apt-get update \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list \
     && curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - 2>/dev/null \
     && apt-get update \
-    && apt-get install -y azure-cli=2.5.1-1~buster \
+    && apt-get install -y azure-cli=${AZURE_CLI_VERSION} \
     #
     # Install the Azure Container Registry's Docker Credential Helper
     && curl -L https://aka.ms/acr/installaad/bash | /bin/bash \
@@ -68,9 +69,9 @@ RUN apt-get update \
 
 COPY . /.devcontainer
 
-RUN chmod +x ./.devcontainer/compute-directory-hash.sh && ./.devcontainer/compute-directory-hash.sh > /root/.devcontainer-hash
+RUN chmod +x ./.devcontainer/compute-directory-hash.sh && ./.devcontainer/compute-directory-hash.sh > /.devcontainer-hash
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
 
-CMD DEVCONTAINERHASH=`cat /root/.devcontainer-hash`
+CMD /bin/bash -c "export DEVCONTAINERHASH=`cat /.devcontainer-hash`; while sleep 1000; do :; done";
