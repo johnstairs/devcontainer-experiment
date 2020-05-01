@@ -13,9 +13,6 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-# [Optional] Install the Azure CLI
-ARG INSTALL_AZURE_CLI="false"
-
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -56,15 +53,24 @@ RUN apt-get update \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list \
     && curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - 2>/dev/null \
     && apt-get update \
-    && apt-get install -y azure-cli \
+    && apt-get install -y azure-cli=2.5.1-1~buster \
     #
     # Install the Azure Container Registry's Docker Credential Helper
     && curl -L https://aka.ms/acr/installaad/bash | /bin/bash \
+    #
+    # Install jq
+    && apt-get install -y jq \
     #
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+COPY . /.devcontainer
+
+RUN ./.devcontainer/compute-directory-hash.sh > /root/.devcontainer-hash
+
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
+
+ENTRYPOINT DEVCONTAINERHASH=`cat /root/.devcontainer-hash`
