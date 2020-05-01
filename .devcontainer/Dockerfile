@@ -68,7 +68,7 @@ RUN apt-get update \
 
 COPY . /.devcontainer
 
-RUN ./.devcontainer/compute-directory-hash.sh > /root/.devcontainer-hash
+RUN chmod +x ./.devcontainer/compute-directory-hash.sh && ./.devcontainer/compute-directory-hash.sh > /root/.devcontainer-hash
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
