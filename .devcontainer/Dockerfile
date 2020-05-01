@@ -73,4 +73,4 @@ RUN chmod +x ./.devcontainer/compute-directory-hash.sh && ./.devcontainer/comput
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
 
-ENTRYPOINT DEVCONTAINERHASH=`cat /root/.devcontainer-hash`
+CMD DEVCONTAINERHASH=`cat /root/.devcontainer-hash`
