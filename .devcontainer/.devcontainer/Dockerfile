@@ -20,6 +20,9 @@ ARG INSTALL_AZURE_CLI="false"
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Configure apt and install packages
+ARG HELM_VERSION="v3.1.2"
+ARG KUBE_VERSION="v1.18.1"
+
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
@@ -43,11 +46,11 @@ RUN apt-get update \
     && apt-get install -y docker-ce docker-ce-cli containerd.io \
     #
     # Install kubectl
-    && curl -sSL -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
+    && curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
     && chmod +x /usr/local/bin/kubectl \
     #
     # Install Helm
-    && curl -s https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash - \
+    && curl -s https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash -s -- -v $HELM_VERSION \
     #
     # Install the Azure CLI
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list \
